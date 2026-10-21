@@ -6,6 +6,7 @@ import AuthModal from './components/AuthModal';
 import UserManagementModal from './components/UserManagementModal';
 import { getCachedTrackUrls, cacheTrack, cacheAllTracks, syncUserCache, removeTrackFromCache } from './utils/cacheHelper';
 import defaultTracks from './data/defaultTracks.js';
+import { BACKEND_URL } from './utils/apiConfig';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -50,7 +51,7 @@ export default function App() {
       return [];
     }
     try {
-      const res = await fetch('/api/music/synced-tracks');
+      const res = await fetch(`${BACKEND_URL}/api/music/synced-tracks`);
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
@@ -318,7 +319,7 @@ export default function App() {
   const handleRemoveTrack = async (track, fromSoundCloudList = false) => {
     if (fromSoundCloudList && isAdmin) {
       try {
-        await fetch(`/api/music/admin/track?url=${encodeURIComponent(track.supabaseUrl)}`, {
+        await fetch(`${BACKEND_URL}/api/music/admin/track?url=${encodeURIComponent(track.supabaseUrl)}`, {
           method: 'DELETE',
         });
       } catch (err) {

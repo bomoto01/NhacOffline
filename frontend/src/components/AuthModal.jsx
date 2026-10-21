@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BACKEND_URL } from '../utils/apiConfig';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,7 +26,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       if (isLogin) {
         // 1. Thử đăng nhập qua Backend trước (khi chạy local)
         try {
-          const res = await fetch('/api/auth/login', {
+          const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email.trim(), password: password }),
@@ -70,7 +71,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       } else {
         // 1. Thử đăng ký qua Backend trước (khi chạy local)
         try {
-          const res = await fetch('/api/auth/signup', {
+          const res = await fetch(`${BACKEND_URL}/api/auth/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email.trim(), password: password }),

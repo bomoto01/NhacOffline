@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { BACKEND_URL } from '../utils/apiConfig';
 
 /**
  * Modal Quản lý Người dùng cao cấp dành cho Quản trị viên (Admin)
@@ -15,7 +16,7 @@ export default function UserManagementModal({ isOpen, onClose }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/music/admin/users');
+      const res = await fetch(`${BACKEND_URL}/api/music/admin/users`);
       if (!res.ok) {
         throw new Error('Không thể kết nối máy chủ để tải danh sách tài khoản.');
       }

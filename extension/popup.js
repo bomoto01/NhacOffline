@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnOpenWebApp = document.getElementById('btnOpenWebApp');
 
   // 1. Tải cài đặt từ chrome.storage.local
-  const { backendUrl = 'http://localhost:8080', autoSync = true, recentTracks = [] } =
+  const { backendUrl = 'https://nhacoffline.onrender.com', autoSync = true, recentTracks = [] } =
     await chrome.storage.local.get(['backendUrl', 'autoSync', 'recentTracks']);
 
   backendUrlInput.value = backendUrl;

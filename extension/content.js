@@ -93,7 +93,7 @@
   async function initSyncedHistory() {
     try {
       // 1.1 Đọc từ chrome.storage.local
-      const { syncedUrlsHistory = [], backendUrl = 'http://localhost:8080' } =
+      const { syncedUrlsHistory = [], backendUrl = 'https://nhacoffline.onrender.com' } =
         await chrome.storage.local.get(['syncedUrlsHistory', 'backendUrl']);
       
       syncedUrlsHistory.forEach(u => syncedUrlsSet.add(cleanSoundCloudUrl(u)));
@@ -169,7 +169,7 @@
 
   // Gửi link về Backend để đồng bộ lên Supabase Storage và Playlist
   async function syncTrackToBackend(track) {
-    const { backendUrl = 'http://localhost:8080', autoSync = true } = 
+    const { backendUrl = 'https://nhacoffline.onrender.com', autoSync = true } = 
       await chrome.storage.local.get(['backendUrl', 'autoSync']);
 
     if (!autoSync) {

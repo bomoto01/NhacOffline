@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { BACKEND_URL } from '../utils/apiConfig';
 
 /**
  * Component Tìm kiếm, Nghe thử (Preview Stream) & Đồng bộ SoundCloud
@@ -90,7 +91,7 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
 
     const audio = previewAudioRef.current;
     audio.pause();
-    const streamUrl = `/api/music/stream-preview?url=${encodeURIComponent(targetUrl)}&_t=${Date.now()}`;
+    const streamUrl = `${BACKEND_URL}/api/music/stream-preview?url=${encodeURIComponent(targetUrl)}&_t=${Date.now()}`;
     audio.src = streamUrl;
     audio.volume = 1.0;
     audio.load();
@@ -139,7 +140,7 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
     setSearchResults([]);
 
     try {
-      const response = await fetch(`/api/music/search?q=${encodeURIComponent(inputVal)}&limit=6`);
+      const response = await fetch(`${BACKEND_URL}/api/music/search?q=${encodeURIComponent(inputVal)}&limit=6`);
       if (!response.ok) {
         throw new Error('Lỗi khi tìm kiếm bài hát từ máy chủ.');
       }
@@ -174,7 +175,7 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
     setSuccess(null);
 
     try {
-      const response = await fetch('/api/music/sync-soundcloud', {
+      const response = await fetch(`${BACKEND_URL}/api/music/sync-soundcloud`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
