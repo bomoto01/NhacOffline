@@ -1,0 +1,173 @@
+export const defaultTracks = [ {
+  "id" : "2199158087",
+  "title" : "Mix 15 Bản Full Hychun x Đông Remix || Vô Tình x Cưới Thôi x Cưới Đi x Rằng Em Mãi Ở Bên ...",
+  "artist" : "Nguyễn Huy",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2199158087_1792420552206.mp3",
+  "durationSeconds" : 4589,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-EZd5mclRmnJyGA1G-Um9QxA-original.png",
+  "originalUrl" : "https://soundcloud.com/demigra/mix-15-ban-full-hychun-x-dong-remix-vo-tinh-x-cuoi-thoi-x-cuoi-di-x-rang-em-mai-o-ben",
+  "createdAt" : "2026-10-19T16:04:55.081Z",
+  "formattedSize" : "~45.8 MB"
+}, {
+  "id" : "2386578027",
+  "title" : "Gái Tây Gốc Việt (Thazh x Đông Remix)",
+  "artist" : "寳dage",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2386578027_1792512745082.mp3",
+  "durationSeconds" : 174,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-f5VsoZwhAoZZMYhS-zj2TFg-original.jpg",
+  "originalUrl" : "https://soundcloud.com/baodage04/g-i-t-y-g-c-vi-t-thazh-x-ng",
+  "createdAt" : "2026-10-20T16:12:25.935646600Z",
+  "formattedSize" : "~2.0 MB"
+}, {
+  "id" : "1527284041",
+  "title" : "Seasons  Thazh Remix",
+  "artist" : "Lê Lợi",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_1527284041_1792589439993.mp3",
+  "durationSeconds" : 257,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-QECdaIb95H3761GI-HGktvg-original.jpg",
+  "originalUrl" : "https://soundcloud.com/l-x-l-i/seasons-thazh-remix",
+  "createdAt" : "2026-10-21T13:30:46.690440Z",
+  "formattedSize" : "~2.9 MB"
+}, {
+  "id" : "1623986880",
+  "title" : "Thiếu Niên Hoa Hồng - SILVER SMOKE REMIX",
+  "artist" : "Ngoc Anh",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_1623986880_1792589661131.mp3",
+  "durationSeconds" : 461,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-NOK8cxm7AZyK2cFA-QtVDLw-original.jpg",
+  "originalUrl" : "https://soundcloud.com/ngoc-anh-580538442/thi-u-ni-n-hoa-h-ng-silver",
+  "createdAt" : "2026-10-21T13:34:26.035580Z",
+  "formattedSize" : "~5.3 MB"
+}, {
+  "id" : "2404491279",
+  "title" : "DRILL VIỆT HOT 2026 | Vết Thương Drill | NHẠC DRILL REMIX HOT TIKTOK 2026",
+  "artist" : "Chidz",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2404491279_1792516904208.mp3",
+  "durationSeconds" : 184,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-bVc9iEnDeOhdIwR3-mcLVWg-original.jpg",
+  "originalUrl" : "https://soundcloud.com/ch-nguy-n-v-698211827/drill-vi-t-hot-2026-v-t-th-ng",
+  "createdAt" : "2026-10-20T17:21:45.370178800Z",
+  "formattedSize" : "~2.1 MB"
+}, {
+  "id" : "2415792105",
+  "title" : "Hạnh Phúc Đó Em Không Có",
+  "artist" : "Hyper Remix",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2415792105_1792429174718.mp3",
+  "durationSeconds" : 231,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-wcbIy0biZ6cgGwf3-6mhyAQ-original.jpg",
+  "originalUrl" : "https://soundcloud.com/hoai-nam-116426018",
+  "createdAt" : "2026-10-19T16:59:36.478588500Z",
+  "formattedSize" : "~2.6 MB"
+}, {
+  "id" : "2403618273",
+  "title" : "Em Là Cô Giáo vùng cao drill",
+  "artist" : "Nam Hoàng",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2403618273_1792516740997.mp3",
+  "durationSeconds" : 152,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-lWM0yQnBXNDXYcaa-KnBuXw-original.jpg",
+  "originalUrl" : "https://soundcloud.com/nam-hoang-495075529/em-la-co-giao-vung-cao-drill",
+  "createdAt" : "2026-10-20T17:19:02.031279500Z",
+  "formattedSize" : "~1.7 MB"
+}, {
+  "id" : "2400157959",
+  "title" : "LAVIEM - JerkDill (Prod.Neyun)",
+  "artist" : "Prod.Neyun",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2400157959_1792589695259.mp3",
+  "durationSeconds" : 259,
+  "coverUrl" : "https://i1.sndcdn.com/avatars-kyQvxCJ1yXJbW40V-3elptg-original.jpg",
+  "originalUrl" : "https://soundcloud.com/neyunoo7/laviem-jerkdill-prod-neyun",
+  "createdAt" : "2026-10-21T13:34:58.454035600Z",
+  "formattedSize" : "~3.0 MB"
+}, {
+  "id" : "2418091995",
+  "title" : "Đêm trắng - ACV Drill",
+  "artist" : "Dau Trong Hau",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2418091995_1792595024526.mp3",
+  "durationSeconds" : 175,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-CGiTpJY9tL29vCq9-T53qVw-original.jpg",
+  "originalUrl" : "https://soundcloud.com/haunghenhac/e-m-tra-ng-acv-drill",
+  "createdAt" : "2026-10-21T15:03:45.983927300Z",
+  "formattedSize" : "~2.0 MB"
+}, {
+  "id" : "2314815221",
+  "title" : "Sau Này Em Cưới Ai Rồi Remix -  Kiều Chi - Kiều Đạt - Tiktok Trending",
+  "artist" : "Kiều Đạt",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2314815221_1792473771998.mp3",
+  "durationSeconds" : 93,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-mZO9wou3Uay2tjuG-sxTK4g-original.jpg",
+  "originalUrl" : "https://soundcloud.com/ki-u-duy-t/saunayemcuoiairoi",
+  "createdAt" : "2026-10-20T05:22:53.699163Z",
+  "formattedSize" : "~1.1 MB"
+}, {
+  "id" : "2394411951",
+  "title" : "Có Khi Nào Rời Xa - Bích Phương ft. Tachi Mix - Detroit",
+  "artist" : "Nguyễn Đức Đức (Young Tachi)",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2394411951_1792512934462.mp3",
+  "durationSeconds" : 110,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-HhYBujylFZLD75ev-yGagmg-original.png",
+  "originalUrl" : "https://soundcloud.com/young_tachi/c-khi-n-o-r-i-xa-b-ch-ph-ng-ft",
+  "createdAt" : "2026-10-20T16:15:36.678400300Z",
+  "formattedSize" : "~1.3 MB"
+}, {
+  "id" : "2032458788",
+  "title" : "CHIẾC KHĂN GIÓ ÂM DRILL MIX [M1NIMAL MIX]",
+  "artist" : "m1nimal",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2032458788_1792516577273.mp3",
+  "durationSeconds" : 170,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-kzWDL3YVy5wR7IMx-YP2GTg-original.png",
+  "originalUrl" : "https://soundcloud.com/minh-dang-130391450/chiec-khan-gio-am-drill-mix-m1nimal-mix",
+  "createdAt" : "2026-10-20T17:16:19.307945800Z",
+  "formattedSize" : "~1.9 MB"
+}, {
+  "id" : "1812566229",
+  "title" : "người mà lòng anh yêu nhất.mp3",
+  "artist" : "Phạm ngọc cường",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_1812566229_1792477519760.mp3",
+  "durationSeconds" : 3287,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-tfDs5gyh9TlKzvGA-PcuDoA-original.jpg",
+  "originalUrl" : "https://soundcloud.com/b-nh-tr-ng-n-ng-570374893/ng-i-m-l-ng-anh-y-u-nh-t-mp3",
+  "createdAt" : "2026-10-20T06:25:26.306011300Z",
+  "formattedSize" : "~37.6 MB"
+}, {
+  "id" : "2196069227",
+  "title" : "NGƯỜI ẤY - HYCHUN X ĐÔNG REMIX | NHẠC REMIX HOT TIKTOK 2025",
+  "artist" : "Hyper Remix",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2196069227_1792466850959.mp3",
+  "durationSeconds" : 244,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-UJ5OiF0AcgGmYk4y-kZjhrQ-original.png",
+  "originalUrl" : "https://soundcloud.com/hoai-nam-116426018/nguoi-ay-hychun-x-dong-remix-nhac-remix-hot-tiktok-2025",
+  "createdAt" : "2026-10-20T03:27:34.414874700Z",
+  "formattedSize" : "~2.8 MB"
+}, {
+  "id" : "308334317",
+  "title" : "Nơi Này Có Anh",
+  "artist" : "VPOP",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_308334317_1792430155738.mp3",
+  "durationSeconds" : 261,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-000208394478-z3u2o8-original.jpg",
+  "originalUrl" : "https://soundcloud.com/vpoppamtio/noi-nay-co-anh",
+  "createdAt" : "2026-10-19T17:15:58.832584900Z",
+  "formattedSize" : "~3.0 MB"
+}, {
+  "id" : "2397224958",
+  "title" : "Sự Thật Sau Một Lời Hứa Remix Jerk Drill x Synth Club",
+  "artist" : "R O I D",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2397224958_1792516480479.mp3",
+  "durationSeconds" : 145,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-NcowM3hOXxpyLcVp-UZ7daQ-original.jpg",
+  "originalUrl" : "https://soundcloud.com/roidfvckurwife/s-th-t-sau-m-t-l-i-h-a-remix",
+  "createdAt" : "2026-10-20T17:14:49.538222400Z",
+  "formattedSize" : "~1.7 MB"
+}, {
+  "id" : "1641966099",
+  "title" : "Resonana-Thái Hoàng",
+  "artist" : "ntl",
+  "supabaseUrl" : "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_1641966099_1792521310546.mp3",
+  "durationSeconds" : 2797,
+  "coverUrl" : "https://i1.sndcdn.com/artworks-4PulkUpHwJTwijzc-7HgFZQ-original.jpg",
+  "originalUrl" : "https://soundcloud.com/chamdaynoidau1205/resonana-thai-hoang",
+  "createdAt" : "2026-10-20T18:35:17.616707Z",
+  "formattedSize" : "~32.0 MB"
+} ]
+;
+export default defaultTracks;
