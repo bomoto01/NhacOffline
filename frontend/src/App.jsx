@@ -5,20 +5,23 @@ import AudioPlayer from './components/AudioPlayer';
 import AuthModal from './components/AuthModal';
 import UserManagementModal from './components/UserManagementModal';
 import { getCachedTrackUrls, cacheTrack, cacheAllTracks, syncUserCache, removeTrackFromCache } from './utils/cacheHelper';
+import defaultTracks from './data/defaultTracks.js';
 
 export default function App() {
   const [user, setUser] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   
-  // Danh sách bài hát đồng bộ từ SoundCloud (hỗ trợ đọc ngay từ offline cache nếu không có mạng)
+  // Danh sách bài hát đồng bộ từ SoundCloud (hỗ trợ đọc ngay từ offline cache hoặc dữ liệu mặc định)
   const [soundcloudTracks, setSoundcloudTracks] = useState(() => {
     try {
       const saved = localStorage.getItem('nhacoffline_cached_soundcloud_tracks');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return Array.isArray(defaultTracks) ? defaultTracks : [];
   });
 
   // Playlist cá nhân của người dùng
@@ -40,7 +43,7 @@ export default function App() {
     return `nhacoffline_playlist_${currentUser.id || currentUser.email}`;
   };
 
-  // 1. Tải toàn bộ bài hát đã đồng bộ từ Backend (chỉ khi ĐÃ ĐĂNG NHẬP, tự động fallback offline)
+  // 1. Tải toàn bộ bài hát đã đồng bộ (chỉ khi ĐÃ ĐĂNG NHẬP, tự động fallback offline)
   const fetchSoundCloudTracks = async () => {
     if (!user) {
       setSoundcloudTracks([]);
@@ -48,9 +51,10 @@ export default function App() {
     }
     try {
       const res = await fetch('/api/music/synced-tracks');
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setSoundcloudTracks((prev) => {
             // Chỉ cập nhật nếu danh sách thực sự thay đổi để tránh re-render liên tục
             if (prev.length === data.length && prev.every((t, i) => t.supabaseUrl === data[i].supabaseUrl)) {
@@ -68,17 +72,25 @@ export default function App() {
       }
     } catch (err) {
       console.warn('Lỗi khi tải kho nhạc SoundCloud (có thể đang Offline):', err);
-      try {
-        const saved = localStorage.getItem('nhacoffline_cached_soundcloud_tracks');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setSoundcloudTracks(parsed);
-            return parsed;
-          }
-        }
-      } catch (e) {}
     }
+
+    try {
+      const saved = localStorage.getItem('nhacoffline_cached_soundcloud_tracks');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setSoundcloudTracks(parsed);
+          return parsed;
+        }
+      }
+    } catch (e) {}
+
+    // Fallback bundled tracks nếu chưa tải được từ mạng
+    if (Array.isArray(defaultTracks) && defaultTracks.length > 0) {
+      setSoundcloudTracks(defaultTracks);
+      return defaultTracks;
+    }
+
     return [];
   };
 

@@ -16,17 +16,50 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setSuccessMsg(null);
     setLoading(true);
 
+    const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || 'https://dipfqewnjpjjaltmatzy.supabase.co').replace(/\/+$/, '');
+    const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || '';
+
+    let data = null;
+
     try {
       if (isLogin) {
-        // Đăng nhập qua Backend API an toàn
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email.trim(), password: password }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.msg || data.error_description || data.message || 'Email hoặc mật khẩu không chính xác.');
+        // 1. Thử đăng nhập qua Backend trước (khi chạy local)
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.trim(), password: password }),
+          });
+          const contentType = res.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const json = await res.json();
+            if (!res.ok) {
+              throw new Error(json.msg || json.error_description || json.message || 'Email hoặc mật khẩu không chính xác.');
+            }
+            data = json;
+          }
+        } catch (backendErr) {
+          if (backendErr.message && backendErr.message.includes('Email hoặc mật khẩu')) {
+            throw backendErr;
+          }
+          // Backend không tồn tại (chạy trên Vercel) -> Tiếp tục gọi trực tiếp Supabase Auth
+        }
+
+        // 2. Nếu Backend không phản hồi (trên Vercel), gọi trực tiếp Supabase Auth REST API
+        if (!data) {
+          const tokenUrl = `${supabaseUrl}/auth/v1/token?grant_type=password`;
+          const res = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email.trim(), password: password }),
+          });
+          data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.msg || data.error_description || data.message || 'Email hoặc mật khẩu không chính xác.');
+          }
         }
 
         // Lưu session vào localStorage
@@ -35,15 +68,42 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         if (onAuthSuccess) onAuthSuccess(data.user);
         setTimeout(() => onClose(), 600);
       } else {
-        // Đăng ký qua Backend API an toàn
-        const res = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email.trim(), password: password }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.msg || data.error_description || data.message || 'Đăng ký tài khoản thất bại.');
+        // 1. Thử đăng ký qua Backend trước (khi chạy local)
+        try {
+          const res = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email.trim(), password: password }),
+          });
+          const contentType = res.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const json = await res.json();
+            if (!res.ok) {
+              throw new Error(json.msg || json.error_description || json.message || 'Đăng ký tài khoản thất bại.');
+            }
+            data = json;
+          }
+        } catch (backendErr) {
+          if (backendErr.message && (backendErr.message.includes('đăng ký') || backendErr.message.includes('Email này'))) {
+            throw backendErr;
+          }
+        }
+
+        // 2. Nếu Backend không phản hồi, gọi trực tiếp Supabase Auth REST API
+        if (!data) {
+          const signupUrl = `${supabaseUrl}/auth/v1/signup`;
+          const res = await fetch(signupUrl, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email.trim(), password: password }),
+          });
+          data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.msg || data.error_description || data.message || 'Đăng ký tài khoản thất bại.');
+          }
         }
 
         if (data.access_token || data.user) {
