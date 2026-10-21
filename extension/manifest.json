@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Nhạc Offline - SoundCloud Sync",
+  "version": "1.0.0",
+  "description": "Tự động phát hiện bài hát đang nghe trên SoundCloud và đồng bộ về ứng dụng Nhạc Offline",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://soundcloud.com/*",
+    "http://localhost:8080/*",
+    "http://127.0.0.1:8080/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Nhạc Offline - SoundCloud Sync",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://soundcloud.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

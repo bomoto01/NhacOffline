@@ -1,0 +1,40 @@
+# Maven build
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Node / Frontend
+**/node_modules/
+**/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDE & Editor
+.idea/
+*.iml
+.vscode/
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Tools binary
+backend/tools/yt-dlp.exe
+
+# Environment & Local Secrets
+.env
+.env.local
+.env.*.local
+application-local.yml
+**/application-local.yml
+
+# Logs
+*.log

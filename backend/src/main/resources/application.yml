@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: music-backend
+  config:
+    import: "optional:file:./application-local.yml,optional:classpath:application-local.yml"
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# Cấu hình Supabase Storage (Mẫu cấu hình an toàn cho GitHub - Key thật đọc từ biến môi trường hoặc application-local.yml)
+supabase:
+  url: ${SUPABASE_URL:https://your-project.supabase.co}
+  # Sử dụng Service Role Key (để bypass RLS an toàn từ backend) hoặc Anon Key nếu đã cấp policy INSERT/SELECT
+  key: ${SUPABASE_KEY:your-supabase-secret-key-here}
+  bucket: music
+
+# Cấu hình đường dẫn yt-dlp (mặc định giả định đã thêm vào PATH hệ thống, hoặc cung cấp đường dẫn tuyệt đối)
+ytdlp:
+  path: ${YTDLP_PATH:d:/Project/NhacOffline/backend/tools/yt-dlp.exe}
+
+# Cấu hình CORS cho Frontend React (Vite chạy port 5173, Create React App chạy port 3000)
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173}
