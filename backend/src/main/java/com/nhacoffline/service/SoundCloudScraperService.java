@@ -288,9 +288,19 @@ public class SoundCloudScraperService {
      */
     public Process startAudioStream(String url) {
         String cleanUrl = url != null ? url.trim().replace("\"", "").replace("'", "") : "";
-        String cmd = String.format("\"%s\" -f bestaudio/best --quiet --no-warnings -o - \"%s\" | ffmpeg -i pipe:0 -acodec libmp3lame -b:a 96k -ar 44100 -f mp3 -vn pipe:1",
-                ytdlpPath, cleanUrl);
-        ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", cmd);
+        boolean isWindows = System.getProperty("os.name", "").toLowerCase().contains("win");
+
+        ProcessBuilder processBuilder;
+        if (isWindows) {
+            String cmd = String.format("\"%s\" -f bestaudio/best --quiet --no-warnings -o - \"%s\" | ffmpeg -i pipe:0 -acodec libmp3lame -b:a 96k -ar 44100 -f mp3 -vn pipe:1",
+                    ytdlpPath, cleanUrl);
+            processBuilder = new ProcessBuilder("cmd.exe", "/c", cmd);
+        } else {
+            String cmd = String.format("%s -f bestaudio/best --quiet --no-warnings -o - \"%s\" | ffmpeg -i pipe:0 -acodec libmp3lame -b:a 96k -ar 44100 -f mp3 -vn pipe:1",
+                    ytdlpPath, cleanUrl);
+            processBuilder = new ProcessBuilder("sh", "-c", cmd);
+        }
+
         processBuilder.redirectError(ProcessBuilder.Redirect.DISCARD);
         try {
             return processBuilder.start();

@@ -73,6 +73,7 @@ public class MusicController {
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Expires", "0");
             response.setHeader("Content-Disposition", "inline");
+            response.setHeader("Access-Control-Allow-Origin", "*");
 
             byte[] buffer = new byte[4096];
             int bytesRead;
