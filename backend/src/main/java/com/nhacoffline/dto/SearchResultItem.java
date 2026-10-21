@@ -9,6 +9,8 @@ public class SearchResultItem {
     private String url;
     private String formattedSize;
     private Long estimatedSizeBytes;
+    private String supabaseUrl;
+    private Boolean isSynced;
 
     public SearchResultItem() {
     }
@@ -60,4 +62,10 @@ public class SearchResultItem {
 
     public Long getEstimatedSizeBytes() { return estimatedSizeBytes; }
     public void setEstimatedSizeBytes(Long estimatedSizeBytes) { this.estimatedSizeBytes = estimatedSizeBytes; }
+
+    public String getSupabaseUrl() { return supabaseUrl; }
+    public void setSupabaseUrl(String supabaseUrl) { this.supabaseUrl = supabaseUrl; }
+
+    public Boolean getIsSynced() { return isSynced; }
+    public void setIsSynced(Boolean isSynced) { this.isSynced = isSynced; }
 }

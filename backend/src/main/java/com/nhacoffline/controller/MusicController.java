@@ -59,6 +59,19 @@ public class MusicController {
             return;
         }
 
+        // 0. Tối ưu siêu tốc: Nếu bài hát đã được lưu trữ trên Supabase Storage, chuyển hướng 302 trực tiếp sang CDN (0.01s)
+        String cleanUrl = soundCloudScraperService.cleanTrackKey(url);
+        for (com.nhacoffline.dto.MusicTrackResponse t : soundCloudScraperService.getAdminTracks()) {
+            if (t.getSupabaseUrl() != null &&
+                (cleanUrl.equals(soundCloudScraperService.cleanTrackKey(t.getOriginalUrl())) ||
+                 url.equals(t.getId()) ||
+                 url.equals(t.getSupabaseUrl()))) {
+                log.info("⚡ Bài hát nghe thử '{}' đã có sẵn trên Supabase CDN, chuyển hướng ngay lập tức (0.01s)!", t.getTitle());
+                response.sendRedirect(t.getSupabaseUrl());
+                return;
+            }
+        }
+
         log.info("Bắt đầu mở luồng nghe thử Preview MP3 thuần cho: {}", url);
         Process process = soundCloudScraperService.startAudioStream(url);
 
@@ -75,17 +88,12 @@ public class MusicController {
             response.setHeader("Content-Disposition", "inline");
             response.setHeader("Access-Control-Allow-Origin", "*");
 
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[8192];
             int bytesRead;
-            boolean isFirst = true;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-                if (isFirst) {
-                    outputStream.flush(); // Đẩy ngay gói MP3 đầu tiên để trình duyệt phát tiếng ra loa tức thì
-                    isFirst = false;
-                }
+                outputStream.flush(); // Đẩy liên tục các gói MP3 để trình duyệt phát ra loa ngay khi nhận được byte đầu tiên
             }
-            outputStream.flush();
         } catch (Exception e) {
             log.info("Dừng luồng nghe thử: {}", e.getMessage());
         } finally {

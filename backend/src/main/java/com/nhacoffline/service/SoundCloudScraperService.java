@@ -270,7 +270,22 @@ public class SoundCloudScraperService {
                             thumbnail = thumbs.get(thumbs.size() - 1).path("url").asText(null);
                         }
 
-                        results.add(new com.nhacoffline.dto.SearchResultItem(id, title, artist, duration, thumbnail, url));
+                        com.nhacoffline.dto.SearchResultItem item = new com.nhacoffline.dto.SearchResultItem(id, title, artist, duration, thumbnail, url);
+                        
+                        // Kiểm tra nếu bài hát đã được lưu trữ sẵn trên Supabase Storage
+                        String cleanU = cleanTrackKey(url);
+                        MusicTrackResponse cached = null;
+                        if (cachedTracks.containsKey(cleanU)) {
+                            cached = cachedTracks.get(cleanU);
+                        } else if (id != null && cachedTracks.containsKey(id)) {
+                            cached = cachedTracks.get(id);
+                        }
+                        if (cached != null) {
+                            item.setSupabaseUrl(cached.getSupabaseUrl());
+                            item.setIsSynced(true);
+                        }
+
+                        results.add(item);
                     }
                 }
             }
@@ -283,21 +298,24 @@ public class SoundCloudScraperService {
 
     /**
      * Khởi chạy Process stream trực tiếp audio của một bài hát (dùng cho tính năng nghe thử Preview)
-     * Pipe trực tiếp yt-dlp sang ffmpeg để xuất MP3 chuẩn 100% (audio/mpeg),
-     * giúp thẻ <audio> phát âm thanh ra loa ngay lập tức mà không bị lỗi codec MP4 phân mảnh.
+     * Sử dụng cấu hình ffmpeg tối ưu độ trễ siêu thấp (probesize 32k, nobuffer, flush_packets 1)
+     * giúp thẻ <audio> phát âm thanh ra loa ngay lập tức mà không phải chờ tải hết buffer.
      */
     public Process startAudioStream(String url) {
         String cleanUrl = url != null ? url.trim().replace("\"", "").replace("'", "") : "";
         boolean isWindows = System.getProperty("os.name", "").toLowerCase().contains("win");
 
+        // Tham số ffmpeg tối ưu độ trễ thấp nhất cho stream trực tiếp
+        String ffmpegArgs = "ffmpeg -hide_banner -loglevel error -probesize 32768 -analyzeduration 100000 -fflags +nobuffer -flags +low_delay -i pipe:0 -acodec libmp3lame -b:a 96k -ar 44100 -f mp3 -flush_packets 1 -vn pipe:1";
+
         ProcessBuilder processBuilder;
         if (isWindows) {
-            String cmd = String.format("\"%s\" -f bestaudio/best --quiet --no-warnings -o - \"%s\" | ffmpeg -i pipe:0 -acodec libmp3lame -b:a 96k -ar 44100 -f mp3 -vn pipe:1",
-                    ytdlpPath, cleanUrl);
+            String cmd = String.format("\"%s\" --buffer-size 16k -f bestaudio/best --quiet --no-warnings -o - \"%s\" | %s",
+                    ytdlpPath, cleanUrl, ffmpegArgs);
             processBuilder = new ProcessBuilder("cmd.exe", "/c", cmd);
         } else {
-            String cmd = String.format("%s -f bestaudio/best --quiet --no-warnings -o - \"%s\" | ffmpeg -i pipe:0 -acodec libmp3lame -b:a 96k -ar 44100 -f mp3 -vn pipe:1",
-                    ytdlpPath, cleanUrl);
+            String cmd = String.format("%s --buffer-size 16k -f bestaudio/best --quiet --no-warnings -o - \"%s\" | %s",
+                    ytdlpPath, cleanUrl, ffmpegArgs);
             processBuilder = new ProcessBuilder("sh", "-c", cmd);
         }
 

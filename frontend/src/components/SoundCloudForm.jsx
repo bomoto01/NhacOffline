@@ -21,6 +21,7 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
   const previewAudioRef = useRef(null);
   const [previewingUrl, setPreviewingUrl] = useState(null);
   const [previewingTitle, setPreviewingTitle] = useState('');
+  const [previewingSupabaseUrl, setPreviewingSupabaseUrl] = useState(null);
   const [isPlayingPreview, setIsPlayingPreview] = useState(false);
   const [loadingPreview, setLoadingPreview] = useState(false);
 
@@ -48,7 +49,6 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
   };
 
   // Dừng nghe thử nếu đang phát
-  // Dừng nghe thử nếu đang phát
   const stopPreview = () => {
     if (previewAudioRef.current) {
       previewAudioRef.current.pause();
@@ -57,26 +57,18 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
     }
     setPreviewingUrl(null);
     setPreviewingTitle('');
+    setPreviewingSupabaseUrl(null);
     setIsPlayingPreview(false);
     setLoadingPreview(false);
   };
 
   // Xử lý bật / tắt nghe thử (Preview)
-  const handleTogglePreview = (targetUrl, itemTitle) => {
-    if (!previewAudioRef.current || !targetUrl) return;
+  const handleTogglePreview = (targetUrl, itemTitle, itemSupabaseUrl) => {
+    if (!targetUrl) return;
 
-    // Nếu đang nghe đúng bài này -> Tạm dừng
-    if (previewingUrl === targetUrl && isPlayingPreview) {
-      previewAudioRef.current.pause();
-      setIsPlayingPreview(false);
-      return;
-    }
-
-    // Nếu đang dừng đúng bài này -> Tiếp tục phát
-    if (previewingUrl === targetUrl && !isPlayingPreview) {
-      previewAudioRef.current.play()
-        .then(() => setIsPlayingPreview(true))
-        .catch(err => console.error('Lỗi tiếp tục phát preview:', err));
+    // Nếu đang nghe đúng bài này -> Tạm dừng / Dừng
+    if (previewingUrl === targetUrl) {
+      stopPreview();
       return;
     }
 
@@ -86,26 +78,18 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
     // Cập nhật thông tin bài nghe thử
     setPreviewingUrl(targetUrl);
     setPreviewingTitle(itemTitle || 'Bài hát đang nghe thử');
-    setLoadingPreview(true);
-    setIsPlayingPreview(false);
+    setPreviewingSupabaseUrl(itemSupabaseUrl || null);
+    setIsPlayingPreview(true);
+    setLoadingPreview(false);
 
-    const audio = previewAudioRef.current;
-    audio.pause();
-    const streamUrl = `${BACKEND_URL}/api/music/stream-preview?url=${encodeURIComponent(targetUrl)}&_t=${Date.now()}`;
-    audio.src = streamUrl;
-    audio.volume = 1.0;
-    audio.load();
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsPlayingPreview(true);
-          setLoadingPreview(false);
-        })
-        .catch((err) => {
-          console.warn('Trình duyệt đang đệm stream preview...', err);
-        });
+    // Nếu bài đã có sẵn link Supabase CDN, phát trực tiếp qua thẻ audio để nghe ngay
+    if (itemSupabaseUrl && previewAudioRef.current) {
+      const audio = previewAudioRef.current;
+      audio.pause();
+      audio.src = itemSupabaseUrl;
+      audio.volume = 1.0;
+      audio.load();
+      audio.play().catch(err => console.warn('Trình duyệt đệm audio:', err));
     }
   };
 
@@ -302,41 +286,49 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
             style={{ display: previewingUrl ? 'flex' : 'none' }}
           >
             <div className="mini-preview-meta">
-              <span className="mini-preview-badge">▶ Đang nghe thử:</span>
+              <span className="mini-preview-badge">
+                {previewingSupabaseUrl ? '⚡ ĐÃ LƯU TRÊN CLOUD' : '▶ PHÁT TRỰC TIẾP'}
+              </span>
               <span className="mini-preview-title">{previewingTitle}</span>
-            </div>
-            <div className="mini-preview-audio-container">
-              <audio
-                ref={previewAudioRef}
-                controls
-                controlsList="nodownload"
-                className="mini-preview-audio-element"
-                onWaiting={() => setLoadingPreview(true)}
-                onPlaying={() => {
-                  setLoadingPreview(false);
-                  setIsPlayingPreview(true);
-                }}
-                onCanPlay={() => setLoadingPreview(false)}
-                onEnded={() => {
-                  setIsPlayingPreview(false);
-                  setPreviewingUrl(null);
-                  setLoadingPreview(false);
-                }}
-                onPause={() => setIsPlayingPreview(false)}
-                onError={(e) => {
-                  console.warn('Lỗi audio preview:', e);
-                  setLoadingPreview(false);
-                  setIsPlayingPreview(false);
-                }}
-              />
               <button
                 type="button"
                 className="btn-close-preview"
                 onClick={stopPreview}
                 title="Dừng nghe thử"
+                style={{ marginLeft: 'auto' }}
               >
                 ✕ Dừng
               </button>
+            </div>
+
+            <div className="mini-preview-audio-container" style={{ width: '100%' }}>
+              {previewingSupabaseUrl ? (
+                <audio
+                  ref={previewAudioRef}
+                  controls
+                  autoPlay
+                  controlsList="nodownload"
+                  className="mini-preview-audio-element"
+                  onWaiting={() => setLoadingPreview(true)}
+                  onPlaying={() => {
+                    setLoadingPreview(false);
+                    setIsPlayingPreview(true);
+                  }}
+                  onEnded={stopPreview}
+                  onError={(e) => console.warn('Lỗi audio preview:', e)}
+                />
+              ) : previewingUrl ? (
+                <iframe
+                  width="100%"
+                  height="80"
+                  scrolling="no"
+                  frameBorder="no"
+                  allow="autoplay"
+                  src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(previewingUrl)}&color=%231db954&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false`}
+                  style={{ borderRadius: '8px', border: 'none', background: 'transparent' }}
+                  title="SoundCloud Preview Player"
+                />
+              ) : null}
             </div>
           </div>
 
@@ -355,8 +347,8 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
                   <button
                     type="button"
                     className={`btn-preview-play ${isThisPlaying ? 'active' : ''}`}
-                    onClick={() => handleTogglePreview(targetUrl, item.title)}
-                    title={isThisPlaying ? 'Tạm dừng nghe thử' : 'Bấm để nghe thử bản này'}
+                    onClick={() => handleTogglePreview(targetUrl, item.title, item.supabaseUrl)}
+                    title={isThisPlaying ? 'Dừng nghe thử' : 'Bấm để nghe thử bản này ngay lập tức'}
                   >
                     {isThisLoading ? (
                       <div className="spinner-preview"></div>
@@ -375,6 +367,7 @@ export default function SoundCloudForm({ onTrackSynced, isOnline, user, onRequir
                   <div className="result-info">
                     <div className="result-title" title={item.title}>
                       {item.title}
+                      {item.isSynced && <span className="preview-indicator" style={{ background: '#1db954', color: '#000' }}>✓ Đã có sẵn</span>}
                       {isThisPlaying && <span className="preview-indicator">Đang nghe thử...</span>}
                     </div>
                     <div className="result-meta">
