@@ -134,4 +134,33 @@ public class SupabaseStorageService {
             return false;
         }
     }
+
+    /**
+     * Tải nội dung file từ Supabase Storage về dạng byte array
+     */
+    public byte[] downloadFile(String fileName) {
+        if (fileName == null || fileName.isBlank()) return null;
+        try {
+            String cleanFileName = sanitizeFileName(fileName);
+            String downloadUrl = String.format("%s/storage/v1/object/authenticated/%s/%s", supabaseUrl, bucketName, cleanFileName);
+            return restClient.get()
+                    .uri(downloadUrl)
+                    .header("Authorization", "Bearer " + supabaseKey)
+                    .header("apikey", supabaseKey)
+                    .retrieve()
+                    .body(byte[].class);
+        } catch (Exception e) {
+            try {
+                String publicUrl = getPublicUrl(fileName);
+                return restClient.get()
+                        .uri(publicUrl)
+                        .retrieve()
+                        .body(byte[].class);
+            } catch (Exception ex) {
+                log.warn("Không tìm thấy file '{}' trên Supabase Storage: {}", fileName, ex.getMessage());
+                return null;
+            }
+        }
+    }
 }
+

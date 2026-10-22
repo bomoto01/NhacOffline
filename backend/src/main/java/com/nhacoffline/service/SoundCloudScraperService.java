@@ -48,13 +48,16 @@ public class SoundCloudScraperService {
     }
 
     /**
-     * Khởi tạo bộ nhớ đệm từ file tracks_cache.json (chứa sẵn các bài hát của Admin đã tải)
+     * Khởi tạo bộ nhớ đệm bài hát:
+     * 1. Ưu tiên tải từ Supabase Cloud Storage (Lưu trữ vĩnh viễn trên đám mây, không lo mất khi Render restart).
+     * 2. Bổ sung từ file tracks_cache.json nội bộ.
      */
     private void initCache() {
+        // 1. Nạp từ Supabase Cloud Storage
         try {
-            java.io.File cacheFile = getCacheFile();
-            if (cacheFile.exists()) {
-                JsonNode root = objectMapper.readTree(cacheFile);
+            byte[] remoteData = supabaseStorageService.downloadFile("tracks_cache.json");
+            if (remoteData != null && remoteData.length > 0) {
+                JsonNode root = objectMapper.readTree(remoteData);
                 if (root.isArray()) {
                     for (JsonNode node : root) {
                         MusicTrackResponse track = objectMapper.treeToValue(node, MusicTrackResponse.class);
@@ -67,26 +70,61 @@ public class SoundCloudScraperService {
                             }
                         }
                     }
+                    log.info("⚡ Đã nạp thành công {} bài hát vĩnh viễn từ Supabase Cloud Storage!", cachedTracks.size());
                 }
-                log.info("Đã nạp thành công {} bài hát vào kho đệm (Cache) của hệ thống!", cachedTracks.size());
             }
         } catch (Exception e) {
-            log.warn("Không thể nạp file cache: {}", e.getMessage());
+            log.warn("Chưa thể nạp cache từ Supabase Cloud Storage: {}", e.getMessage());
+        }
+
+        // 2. Nạp bổ sung từ file cache cục bộ (phòng trường hợp bài mới được deploy kèm mã nguồn)
+        try {
+            java.io.File cacheFile = getCacheFile();
+            if (cacheFile.exists()) {
+                JsonNode root = objectMapper.readTree(cacheFile);
+                if (root.isArray()) {
+                    for (JsonNode node : root) {
+                        MusicTrackResponse track = objectMapper.treeToValue(node, MusicTrackResponse.class);
+                        if (track != null && track.getSupabaseUrl() != null) {
+                            if (track.getId() != null && !cachedTracks.containsKey(track.getId())) {
+                                cachedTracks.put(track.getId(), track);
+                            }
+                            if (track.getOriginalUrl() != null && !cachedTracks.containsKey(cleanTrackKey(track.getOriginalUrl()))) {
+                                cachedTracks.put(cleanTrackKey(track.getOriginalUrl()), track);
+                            }
+                        }
+                    }
+                }
+                log.info("Tổng số bài hát sau khi hợp nhất vào kho đệm (Cache): {} bài!", cachedTracks.size());
+            }
+        } catch (Exception e) {
+            log.warn("Không thể nạp file cache cục bộ: {}", e.getMessage());
         }
     }
 
     /**
-     * Lưu bài hát mới vào file cache trên đĩa để lưu trữ vĩnh viễn
+     * Lưu bài hát mới vào file cache trên đĩa và ĐỒNG BỘ LÊN SUPABASE CLOUD STORAGE VĨNH VIỄN
      */
     private synchronized void persistCache() {
         try {
+            java.util.Collection<MusicTrackResponse> uniqueTracks = new java.util.LinkedHashSet<>(cachedTracks.values());
+            byte[] jsonBytes = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(uniqueTracks);
+
+            // 1. Ghi ra đĩa cục bộ
             java.io.File file = getCacheFile();
             java.io.File parent = file.getParentFile();
             if (parent != null && !parent.exists()) {
                 parent.mkdirs();
             }
-            java.util.Collection<MusicTrackResponse> uniqueTracks = new java.util.LinkedHashSet<>(cachedTracks.values());
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, uniqueTracks);
+            java.nio.file.Files.write(file.toPath(), jsonBytes);
+
+            // 2. Upload thẳng lên Supabase Cloud Storage để lưu trữ vĩnh viễn 24/7 (Không bao giờ bị mất khi Render spin down)
+            try {
+                supabaseStorageService.uploadFile("tracks_cache.json", jsonBytes, "application/json");
+                log.info("⚡ Đã đồng bộ vĩnh viễn danh sách {} bài hát lên Supabase Cloud Storage thành công!", uniqueTracks.size());
+            } catch (Exception e) {
+                log.warn("Lỗi khi upload tracks_cache.json lên Supabase: {}", e.getMessage());
+            }
         } catch (Exception e) {
             log.warn("Lỗi khi ghi cache ra file: {}", e.getMessage());
         }
