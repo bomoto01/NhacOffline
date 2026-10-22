@@ -152,15 +152,32 @@ export default function AudioPlayer({
     }
   };
 
-  // Tua bài hát khi click vào thanh tiến trình
-  const handleSeek = (e) => {
+  // Tua bài hát theo tọa độ click hoặc cảm ứng vuốt trên điện thoại
+  const seekToX = (clientX) => {
     if (!progressBarRef.current || !audioRef.current || !duration) return;
     const rect = progressBarRef.current.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const width = rect.width;
-    const seekTime = (clickX / width) * duration;
+    const clickX = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const seekTime = (clickX / rect.width) * duration;
     audioRef.current.currentTime = seekTime;
     setCurrentTime(seekTime);
+  };
+
+  const handleSeek = (e) => {
+    seekToX(e.clientX);
+  };
+
+  const handleTouchSeek = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      seekToX(e.touches[0].clientX);
+    }
+  };
+
+  // Tua tới / lùi số giây nhất định (ví dụ: -10s, +10s)
+  const handleSkip = (seconds) => {
+    if (!audioRef.current || !duration) return;
+    const newTime = Math.max(0, Math.min(audioRef.current.currentTime + seconds, duration));
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
   };
 
   // Thay đổi âm lượng
@@ -242,7 +259,10 @@ export default function AudioPlayer({
             />
             <div className="player-text">
               <div className="player-title">{currentTrack.title}</div>
-              <div className="player-artist">{currentTrack.artist || 'SoundCloud'}</div>
+              <div className="player-artist">
+                <span>{currentTrack.artist || 'SoundCloud'}</span>
+                <span className="player-mobile-time"> • {formatTime(currentTime)} / {formatTime(duration)}</span>
+              </div>
             </div>
           </>
         ) : (
@@ -252,7 +272,7 @@ export default function AudioPlayer({
         )}
       </div>
 
-      {/* Điều khiển trung tâm (Previous, Play/Pause, Next, Thanh tiến trình) */}
+      {/* Điều khiển trung tâm (Previous, Skip -10s, Play/Pause, Skip +10s, Next, Thanh tiến trình) */}
       <div className="player-center-controls">
         <div className="control-buttons">
           {/* Nút lùi bài */}
@@ -265,6 +285,19 @@ export default function AudioPlayer({
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
             </svg>
+          </button>
+
+          {/* Nút tua lùi 10s */}
+          <button
+            className="btn-icon btn-seek-step"
+            onClick={() => handleSkip(-10)}
+            disabled={!currentTrack}
+            title="Tua lùi 10 giây"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.5 8c-2.65 0-5.05 1-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.2 3.16-1.98 5.12-1.98 3.76 0 6.9 2.61 7.7 6.13l2.42-.8C21.43 11.23 17.37 8 12.5 8z"/>
+            </svg>
+            <span className="seek-step-num">10</span>
           </button>
 
           {/* Nút Play / Pause */}
@@ -285,6 +318,19 @@ export default function AudioPlayer({
             )}
           </button>
 
+          {/* Nút tua tiến 10s */}
+          <button
+            className="btn-icon btn-seek-step"
+            onClick={() => handleSkip(10)}
+            disabled={!currentTrack}
+            title="Tua tới 10 giây"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.5 8c2.65 0 5.05 1 6.9 2.6L22 7v9h-9l3.62-3.62c-1.39-1.2-3.16-1.98-5.12-1.98-3.76 0-6.9 2.61-7.7 6.13l-2.42-.8C2.57 11.23 6.63 8 11.5 8z"/>
+            </svg>
+            <span className="seek-step-num">10</span>
+          </button>
+
           {/* Nút chuyển bài tiếp theo */}
           <button
             className="btn-icon"
@@ -298,18 +344,22 @@ export default function AudioPlayer({
           </button>
         </div>
 
-        {/* Thanh tua bài hát (Seekbar) */}
+        {/* Thanh tua bài hát (Seekbar cảm ứng mượt mà cả Desktop và Mobile) */}
         <div className="playback-bar">
           <span className="time-display">{formatTime(currentTime)}</span>
           <div
             className="progress-bar-container"
             ref={progressBarRef}
             onClick={handleSeek}
+            onTouchStart={handleTouchSeek}
+            onTouchMove={handleTouchSeek}
           >
             <div
               className="progress-bar-fill"
               style={{ width: `${progressPercent}%` }}
-            />
+            >
+              <div className="progress-bar-thumb" />
+            </div>
           </div>
           <span className="time-display">{formatTime(duration)}</span>
         </div>
