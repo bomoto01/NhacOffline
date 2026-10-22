@@ -865,25 +865,7 @@ body {
   cursor: pointer;
 }
 
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .sync-form {
-    flex-direction: column;
-  }
-  .sync-button {
-    height: 46px;
-    justify-content: center;
-  }
-  .audio-player-dock {
-    padding: 0 12px;
-  }
-  .player-right-controls {
-    display: none;
-  }
-  .player-track-info {
-    width: 40%;
-  }
-}
+/* Note: Mobile responsive styles are consolidated at the bottom of the stylesheet */
 
 /* Search Results Section */
 .search-results-section {
@@ -2256,17 +2238,600 @@ body {
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* ==========================================================================
+   CHUYÊN BIỆT GIAO DIỆN DI ĐỘNG (MOBILE-FIRST RESPONSIVE PERFECTION)
+   Tối ưu hóa toàn diện cho điện thoại: Typography hiện đại, kích thước chuẩn ngón tay,
+   Audio Dock Player phong cách Spotify/Apple Music, Glassmorphism bắt mắt.
+   ========================================================================== */
 @media (max-width: 768px) {
+  :root {
+    --player-height: 72px;
+  }
+
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 1. Header trên điện thoại: Tinh gọn, hiện đại, không bị tràn viền */
+  .app-header {
+    padding: 10px 14px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    box-shadow: 0 2px 10px rgba(29, 185, 84, 0.35);
+  }
+
+  .brand-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .brand-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    background: linear-gradient(135deg, #ffffff 40%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .network-badge {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    border-radius: 12px;
+  }
+
+  .network-badge span:not(.status-dot) {
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .user-profile-badge {
+    padding: 3px 6px 3px 8px;
+    border-radius: 20px;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .user-chip {
+    gap: 5px;
+    font-size: 0.75rem;
+  }
+
+  .user-chip svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .user-chip-email,
+  .user-profile-badge .user-chip span:first-of-type {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  .user-role-badge {
+    font-size: 0.62rem;
+    padding: 2px 5px;
+    border-radius: 6px;
+  }
+
+  .btn-admin-manage {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    border-radius: 12px;
+  }
+
+  .btn-logout {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    border-radius: 6px;
+  }
+
+  .btn-open-auth {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 18px;
+    gap: 6px;
+    box-shadow: 0 2px 10px rgba(29, 185, 84, 0.25);
+  }
+
+  /* 2. Khoảng cách nội dung chính (Main Content) */
+  .main-content {
+    padding: 14px 12px;
+    padding-bottom: calc(var(--player-height) + 24px);
+  }
+
+  /* 3. Khung Tìm Kiếm & Nhập Nhạc (.sync-section) */
+  .sync-section {
+    padding: 16px 14px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    background: linear-gradient(180deg, rgba(34, 34, 34, 0.95) 0%, rgba(22, 22, 22, 0.98) 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sync-section h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+
+  .sync-section p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 14px;
+    color: #9ca3af;
+  }
+
+  .sync-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sync-input {
+    height: 48px;
+    font-size: 0.92rem;
+    border-radius: 12px;
+    padding: 12px 14px 12px 42px;
+    background: #252525;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sync-input:focus {
+    border-color: var(--primary);
+    background: #2b2b2b;
+  }
+
+  .input-icon {
+    left: 14px;
+  }
+
+  .sync-button {
+    height: 46px;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    width: 100%;
+    box-shadow: 0 4px 14px rgba(29, 185, 84, 0.35);
+  }
+
+  .sync-button:active {
+    transform: scale(0.98);
+  }
+
+  .auth-hint-banner {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  /* 4. Mini Preview Banner */
+  .mini-preview-banner {
+    padding: 10px 12px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    gap: 8px;
+  }
+
+  .mini-preview-meta {
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+
+  .mini-preview-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+
+  .mini-preview-title {
+    font-size: 0.82rem;
+    max-width: 180px;
+  }
+
+  .btn-close-preview {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+
+  /* 5. Kết Quả Tìm Kiếm */
+  .search-results-section {
+    margin-top: 18px;
+    padding-top: 14px;
+  }
+
+  .search-results-header {
+    margin-bottom: 10px;
+  }
+
+  .search-results-header h4 {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .btn-close-results {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+  }
+
+  .search-results-list {
+    gap: 8px;
+  }
+
+  .search-result-card {
+    padding: 10px 10px;
+    border-radius: 12px;
+    background: #1c1c1c;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .search-result-card.playing {
+    border-color: rgba(29, 185, 84, 0.45);
+    background: rgba(29, 185, 84, 0.08);
+  }
+
+  .btn-preview-play {
+    width: 38px;
+    height: 38px;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+
+  .result-info {
+    margin-right: 8px;
+  }
+
+  .result-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .result-meta {
+    font-size: 0.72rem;
+    gap: 5px;
+    margin-top: 2px;
+  }
+
+  .result-artist {
+    max-width: 120px;
+  }
+
+  .btn-save-track {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+    border-radius: 16px;
+    font-weight: 700;
+  }
+
+  /* 6. Tabs Playlist: Chuyển sang Segmented Control chuẩn điện thoại */
+  .playlist-header-tabs {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 14px;
+  }
+
+  .tabs-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    gap: 3px;
+  }
+
+  .tab-btn {
+    padding: 8px 4px;
+    font-size: 0.76rem;
+    border-radius: 9px;
+    text-align: center;
+    justify-content: center;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tab-btn.active {
+    background: #2c2c2c;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .btn-download-all-offline {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    border-radius: 12px;
+  }
+
+  .btn-add-all-admin {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  /* 7. Danh sách bài hát (.track-item) */
+  .playlist-section h3 {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+
+  .track-list {
+    gap: 6px;
+  }
+
+  .track-item {
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .track-item:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .track-item.active {
+    background: rgba(29, 185, 84, 0.12);
+    border-color: rgba(29, 185, 84, 0.3);
+  }
+
+  .track-cover {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    margin-right: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .track-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .track-artist {
+    font-size: 0.74rem;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+
+  .track-actions {
+    gap: 6px;
+    margin-left: 8px;
+  }
+
+  .btn-remove-track,
+  .btn-add-track {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-cache-single {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+    border-radius: 8px;
+  }
+
+  /* 8. Audio Player Dock ở đáy màn hình: Phong cách Spotify Mobile */
+  .audio-player-dock {
+    height: 72px;
+    padding: 0 14px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(18, 18, 18, 0.96);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.75);
+    position: fixed;
+    z-index: 100;
+  }
+
+  .player-track-info {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  .player-cover {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    margin-right: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .player-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .player-artist {
+    font-size: 0.72rem;
+    color: #a1a1aa;
+  }
+
+  .player-center-controls {
+    flex: 0 0 auto;
+    max-width: none;
+    gap: 0;
+  }
+
+  /* Thanh tiến trình chạy viền trên cùng của Player Dock */
+  .playback-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    gap: 0;
+  }
+
+  .playback-bar .time-display {
+    display: none;
+  }
+
+  .progress-bar-container {
+    height: 3px;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .progress-bar-fill {
+    background: var(--primary);
+    border-radius: 0;
+  }
+
+  .control-buttons {
+    gap: 10px;
+  }
+
+  .control-buttons .btn-icon {
+    padding: 6px;
+  }
+
+  .control-buttons .btn-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .control-buttons .btn-play-pause {
+    width: 40px;
+    height: 40px;
+    background-color: #ffffff;
+    color: #000000;
+    box-shadow: 0 4px 14px rgba(255, 255, 255, 0.3);
+  }
+
+  .control-buttons .btn-play-pause:active {
+    transform: scale(0.94);
+  }
+
+  .player-right-controls {
+    display: none;
+  }
+
+  /* 9. Modal giao diện trên di động */
+  .auth-modal-overlay,
+  .user-modal-overlay {
+    padding: 12px;
+    align-items: center;
+  }
+
+  .auth-modal-content {
+    padding: 22px 18px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .auth-modal-title {
+    font-size: 1.25rem;
+  }
+
+  .auth-form-group input {
+    height: 46px;
+    font-size: 0.92rem;
+    border-radius: 10px;
+  }
+
+  .btn-auth-submit {
+    height: 46px;
+    font-size: 0.92rem;
+    border-radius: 10px;
+  }
+
+  .user-modal-content {
+    width: 100%;
+    max-height: 92vh;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .user-modal-title {
+    font-size: 1.15rem;
+  }
+
   .user-stats-bar {
     grid-template-columns: 1fr;
     gap: 8px;
   }
+
   .user-filter-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
+
   .user-chip-email {
     max-width: 110px;
+  }
+}
+
+/* Tối ưu thêm cho màn hình siêu nhỏ (<= 400px như iPhone SE / Galaxy Mini) */
+@media (max-width: 400px) {
+  .brand-title {
+    font-size: 0.95rem;
+  }
+  
+  .network-badge span:not(.status-dot) {
+    display: none;
+  }
+  
+  .network-badge {
+    padding: 6px;
+    border-radius: 50%;
+  }
+
+  .user-chip-email {
+    max-width: 60px;
+  }
+
+  .player-cover {
+    width: 38px;
+    height: 38px;
+    margin-right: 8px;
+  }
+
+  .player-title {
+    font-size: 0.82rem;
+  }
+
+  .control-buttons {
+    gap: 6px;
   }
 }
 
