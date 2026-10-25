@@ -92,7 +92,7 @@ public class SoundCloudScraperService {
         }
     }
 
-    private String cleanTrackKey(String url) {
+    public String cleanTrackKey(String url) {
         if (url == null) return "";
         return url.trim().toLowerCase().replaceAll("\\?.*$", "").replaceAll("/+$", "");
     }
