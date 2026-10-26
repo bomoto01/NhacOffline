@@ -849,6 +849,47 @@ body {
   background-color: var(--primary);
 }
 
+.progress-bar-thumb {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.progress-bar-container:hover .progress-bar-thumb {
+  opacity: 1;
+}
+
+.btn-seek-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seek-step-num {
+  position: absolute;
+  font-size: 0.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.player-mobile-time {
+  display: none;
+}
+
 /* Player Right: Volume */
 .player-right-controls {
   display: flex;
@@ -1955,6 +1996,8 @@ body {
 .users-table-container {
   flex: 1;
   overflow-y: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(0, 0, 0, 0.25);
@@ -2691,33 +2734,51 @@ body {
     gap: 0;
   }
 
-  /* Thanh tiến trình chạy viền trên cùng của Player Dock */
+  /* Thanh tiến trình chạy viền trên cùng của Player Dock: Vùng chạm rộng 24px + nút tròn tua chuẩn ngón tay */
   .playback-bar {
     position: absolute;
-    top: 0;
+    top: -10px;
     left: 0;
     right: 0;
-    height: 3px;
-    gap: 0;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    touch-action: none;
+    cursor: pointer;
+    z-index: 50;
   }
 
   .playback-bar .time-display {
     display: none;
   }
 
-  .progress-bar-container {
-    height: 3px;
-    border-radius: 0;
-    background: rgba(255, 255, 255, 0.12);
+  .playback-bar .progress-bar-container {
+    width: 100%;
+    height: 5px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.22);
+    position: relative;
+    overflow: visible;
   }
 
-  .progress-bar-fill {
+  .playback-bar .progress-bar-fill {
     background: var(--primary);
-    border-radius: 0;
+    border-radius: 4px;
+    position: relative;
+    height: 100%;
+  }
+
+  .playback-bar .progress-bar-thumb {
+    opacity: 1 !important;
+    right: -7px;
+    width: 14px;
+    height: 14px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.7), 0 0 10px rgba(29, 185, 84, 0.85);
   }
 
   .control-buttons {
-    gap: 10px;
+    gap: 8px;
   }
 
   .control-buttons .btn-icon {
@@ -2725,8 +2786,24 @@ body {
   }
 
   .control-buttons .btn-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
+  }
+
+  .btn-seek-step {
+    padding: 4px;
+  }
+
+  .seek-step-num {
+    font-size: 0.5rem;
+    font-weight: 800;
+  }
+
+  .player-mobile-time {
+    display: inline !important;
+    color: #34d399;
+    font-weight: 600;
+    margin-left: 2px;
   }
 
   .control-buttons .btn-play-pause {
@@ -2745,11 +2822,129 @@ body {
     display: none;
   }
 
-  /* 9. Modal giao diện trên di động */
-  .auth-modal-overlay,
-  .user-modal-overlay {
-    padding: 12px;
-    align-items: center;
+  /* 9. Modal giao diện trên di động: Khắc phục lỗi tràn màn hình */
+  .auth-overlay {
+    padding: 8px;
+  }
+
+  .user-management-modal.modern {
+    width: calc(100% - 12px) !important;
+    max-width: 100% !important;
+    margin: 6px auto !important;
+    padding: 16px 12px !important;
+    max-height: 92vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-radius: 18px !important;
+    box-sizing: border-box !important;
+  }
+
+  .user-modal-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .user-modal-title-box {
+    gap: 10px;
+  }
+
+  .user-modal-title-box h3 {
+    font-size: 1.08rem;
+  }
+
+  .user-modal-title-box p {
+    font-size: 0.74rem;
+  }
+
+  .user-modal-top-actions {
+    width: 100%;
+  }
+
+  .btn-refresh-users-pill {
+    width: 100%;
+    justify-content: center;
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
+
+  .user-stats-bar {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .user-stat-card {
+    padding: 10px 14px;
+    border-radius: 12px;
+  }
+
+  .stat-card-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1.3rem;
+  }
+
+  .stat-card-info .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .user-filter-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .user-search-wrapper {
+    min-width: 100% !important;
+    width: 100% !important;
+    height: 42px;
+    border-radius: 10px;
+  }
+
+  .user-role-filter-pills {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+
+  .filter-pill {
+    padding: 6px 2px !important;
+    font-size: 0.72rem !important;
+    text-align: center;
+    justify-content: center;
+    border-radius: 8px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .users-table-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    border-radius: 12px;
+  }
+
+  .modern-users-table {
+    min-width: 560px !important;
+    width: 100% !important;
+  }
+
+  .modern-users-table th {
+    padding: 8px 10px;
+    font-size: 0.72rem;
+  }
+
+  .modern-users-table td {
+    padding: 10px 10px;
+    font-size: 0.78rem;
   }
 
   .auth-modal-content {
@@ -2773,31 +2968,6 @@ body {
     height: 46px;
     font-size: 0.92rem;
     border-radius: 10px;
-  }
-
-  .user-modal-content {
-    width: 100%;
-    max-height: 92vh;
-    padding: 16px;
-    border-radius: 20px;
-  }
-
-  .user-modal-title {
-    font-size: 1.15rem;
-  }
-
-  .user-stats-bar {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .user-filter-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .user-chip-email {
-    max-width: 110px;
   }
 }
 
