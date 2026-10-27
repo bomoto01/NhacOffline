@@ -370,25 +370,37 @@ export default function App() {
     <div className="app-container">
       {/* Thanh Header ứng dụng */}
       <header className="app-header">
-        <div className="brand">
-          <div className="brand-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-            </svg>
+        <div className="header-brand-row">
+          <div className="brand">
+            <div className="brand-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+              </svg>
+            </div>
+            <div className="brand-text">
+              <span className="brand-title">Offline Sound</span>
+            </div>
           </div>
-          <div className="brand-text">
-            <span className="brand-title">Offline Sound PWA</span>
-          </div>
-        </div>
 
-        <div className="header-actions">
           {/* Trạng thái kết nối mạng Online/Offline */}
           <div className={`network-badge ${isOnline ? 'online' : 'offline'}`}>
             <span className="status-dot"></span>
             <span>{isOnline ? 'Online' : 'Offline'}</span>
           </div>
 
-          {/* Khu vực thông tin User & Đăng nhập */}
+          {!user && (
+            <button 
+              type="button" 
+              className="btn-open-auth mobile-only-auth"
+              onClick={() => setIsAuthOpen(true)}
+            >
+              <span>Đăng nhập</span>
+            </button>
+          )}
+        </div>
+
+        {/* Khu vực thông tin User & Đăng nhập */}
+        <div className="header-user-row">
           {user ? (
             <div className="user-profile-badge">
               <div className="user-chip">
@@ -397,39 +409,40 @@ export default function App() {
                 ) : (
                   <span className="user-role-badge user">🎵 Thành viên</span>
                 )}
-                <span className="user-email">{user.email}</span>
+                <span className="user-email" title={user.email}>{user.email}</span>
               </div>
 
-              {isAdmin && (
+              <div className="user-actions-cluster">
+                {isAdmin && (
+                  <button
+                    type="button"
+                    className="btn-admin-manage"
+                    onClick={() => setIsUserModalOpen(true)}
+                    title="Bảng điều khiển & Quản lý danh sách người dùng"
+                  >
+                    <span className="btn-admin-icon-wrapper">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                      </svg>
+                    </span>
+                    <span className="btn-admin-label">Quản lý</span>
+                  </button>
+                )}
+
                 <button
                   type="button"
-                  className="btn-admin-manage"
-                  onClick={() => setIsUserModalOpen(true)}
-                  title="Bảng điều khiển & Quản lý danh sách người dùng"
+                  className="btn-logout"
+                  onClick={handleLogout}
+                  title="Đăng xuất khỏi tài khoản"
                 >
-                  <span className="btn-admin-icon-wrapper">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                    </svg>
-                  </span>
-                  <span className="btn-admin-label">Quản lý Users</span>
-                  <span className="btn-admin-glow-pill">Admin</span>
+                  Đăng xuất
                 </button>
-              )}
-
-              <button
-                type="button"
-                className="btn-logout"
-                onClick={handleLogout}
-                title="Đăng xuất khỏi tài khoản"
-              >
-                Đăng xuất
-              </button>
+              </div>
             </div>
           ) : (
             <button 
               type="button" 
-              className="btn-open-auth"
+              className="btn-open-auth desktop-only-auth"
               onClick={() => setIsAuthOpen(true)}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
