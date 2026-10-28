@@ -57,17 +57,27 @@ export default function App() {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
           setSoundcloudTracks((prev) => {
-            // Chỉ cập nhật nếu danh sách thực sự thay đổi để tránh re-render liên tục
-            if (prev.length === data.length && prev.every((t, i) => t.supabaseUrl === data[i].supabaseUrl)) {
+            // Hợp nhất dữ liệu mới từ backend với các bài đang có trong session
+            const map = new Map();
+            data.forEach((t) => {
+              if (t?.supabaseUrl) map.set(t.supabaseUrl, t);
+            });
+            (prev || []).forEach((t) => {
+              if (t?.supabaseUrl && !map.has(t.supabaseUrl)) {
+                map.set(t.supabaseUrl, t);
+              }
+            });
+            const merged = Array.from(map.values());
+            if (prev.length === merged.length && prev.every((t, i) => t.supabaseUrl === merged[i]?.supabaseUrl)) {
               return prev;
             }
-            return data;
+            try {
+              localStorage.setItem('nhacoffline_cached_soundcloud_tracks', JSON.stringify(merged));
+            } catch (e) {
+              console.warn('Lỗi lưu cache danh sách bài hát:', e);
+            }
+            return merged;
           });
-          try {
-            localStorage.setItem('nhacoffline_cached_soundcloud_tracks', JSON.stringify(data));
-          } catch (e) {
-            console.warn('Lỗi lưu cache danh sách bài hát:', e);
-          }
           return data;
         }
       }
