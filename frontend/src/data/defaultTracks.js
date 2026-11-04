@@ -209,17 +209,6 @@ export const defaultTracks = [
     "formattedSize": "~3.0 MB"
   },
   {
-    "id": "2324995916",
-    "title": "Sau Này Em Cưới Ai Rồi Remix - Ngỡ sét đánh ngang trời",
-    "artist": "dt8p",
-    "supabaseUrl": "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2324995916_1792661498053.mp3",
-    "durationSeconds": 266,
-    "coverUrl": "https://i1.sndcdn.com/artworks-Wp0LfJWhi5QcifXD-UEgB8g-original.jpg",
-    "originalUrl": "https://soundcloud.com/dt8p/sau-n-y-em-c-i-ai-r-i-remix-ng",
-    "createdAt": "2026-10-22T09:31:39.274Z",
-    "formattedSize": "~3.0 MB"
-  },
-  {
     "id": "2267342528",
     "title": "Thành Đô-Remix",
     "artist": "Khánh Nma",
@@ -405,17 +394,6 @@ export const defaultTracks = [
     "originalUrl": "https://soundcloud.com/haunghenhac/e-m-tra-ng-acv-drill",
     "createdAt": "2026-10-21T15:03:45.983927300Z",
     "formattedSize": "~2.0 MB"
-  },
-  {
-    "id": "2314815221",
-    "title": "Sau Này Em Cưới Ai Rồi Remix -  Kiều Chi - Kiều Đạt - Tiktok Trending",
-    "artist": "Kiều Đạt",
-    "supabaseUrl": "https://dipfqewnjpjjaltmatzy.supabase.co/storage/v1/object/public/music/sc_2314815221_1792473771998.mp3",
-    "durationSeconds": 93,
-    "coverUrl": "https://i1.sndcdn.com/artworks-mZO9wou3Uay2tjuG-sxTK4g-original.jpg",
-    "originalUrl": "https://soundcloud.com/ki-u-duy-t/saunayemcuoiairoi",
-    "createdAt": "2026-10-20T05:22:53.699163Z",
-    "formattedSize": "~1.1 MB"
   },
   {
     "id": "2394411951",

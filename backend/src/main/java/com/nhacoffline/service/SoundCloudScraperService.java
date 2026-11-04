@@ -53,12 +53,13 @@ public class SoundCloudScraperService {
      * 2. Bổ sung từ file tracks_cache.json nội bộ.
      */
     private void initCache() {
-        // 1. Nạp từ Supabase Cloud Storage
+        boolean loadedRemote = false;
+        // 1. Ưu tiên nạp từ Supabase Cloud Storage (nguồn chuẩn vĩnh viễn trên đám mây)
         try {
             byte[] remoteData = supabaseStorageService.downloadFile("tracks_cache.json");
             if (remoteData != null && remoteData.length > 0) {
                 JsonNode root = objectMapper.readTree(remoteData);
-                if (root.isArray()) {
+                if (root.isArray() && root.size() > 0) {
                     for (JsonNode node : root) {
                         MusicTrackResponse track = objectMapper.treeToValue(node, MusicTrackResponse.class);
                         if (track != null && track.getSupabaseUrl() != null) {
@@ -70,6 +71,7 @@ public class SoundCloudScraperService {
                             }
                         }
                     }
+                    loadedRemote = true;
                     log.info("⚡ Đã nạp thành công {} bài hát vĩnh viễn từ Supabase Cloud Storage!", cachedTracks.size());
                 }
             }
@@ -77,28 +79,30 @@ public class SoundCloudScraperService {
             log.warn("Chưa thể nạp cache từ Supabase Cloud Storage: {}", e.getMessage());
         }
 
-        // 2. Nạp bổ sung từ file cache cục bộ (phòng trường hợp bài mới được deploy kèm mã nguồn)
-        try {
-            java.io.File cacheFile = getCacheFile();
-            if (cacheFile.exists()) {
-                JsonNode root = objectMapper.readTree(cacheFile);
-                if (root.isArray()) {
-                    for (JsonNode node : root) {
-                        MusicTrackResponse track = objectMapper.treeToValue(node, MusicTrackResponse.class);
-                        if (track != null && track.getSupabaseUrl() != null) {
-                            if (track.getId() != null && !cachedTracks.containsKey(track.getId())) {
-                                cachedTracks.put(track.getId(), track);
-                            }
-                            if (track.getOriginalUrl() != null && !cachedTracks.containsKey(cleanTrackKey(track.getOriginalUrl()))) {
-                                cachedTracks.put(cleanTrackKey(track.getOriginalUrl()), track);
+        // 2. Chỉ nạp từ file cache cục bộ nếu KHÔNG nạp được từ Supabase Cloud Storage
+        if (!loadedRemote) {
+            try {
+                java.io.File cacheFile = getCacheFile();
+                if (cacheFile.exists()) {
+                    JsonNode root = objectMapper.readTree(cacheFile);
+                    if (root.isArray()) {
+                        for (JsonNode node : root) {
+                            MusicTrackResponse track = objectMapper.treeToValue(node, MusicTrackResponse.class);
+                            if (track != null && track.getSupabaseUrl() != null) {
+                                if (track.getId() != null && !cachedTracks.containsKey(track.getId())) {
+                                    cachedTracks.put(track.getId(), track);
+                                }
+                                if (track.getOriginalUrl() != null && !cachedTracks.containsKey(cleanTrackKey(track.getOriginalUrl()))) {
+                                    cachedTracks.put(cleanTrackKey(track.getOriginalUrl()), track);
+                                }
                             }
                         }
                     }
+                    log.info("Đã nạp {} bài hát từ cache cục bộ!", cachedTracks.size());
                 }
-                log.info("Tổng số bài hát sau khi hợp nhất vào kho đệm (Cache): {} bài!", cachedTracks.size());
+            } catch (Exception e) {
+                log.warn("Không thể nạp file cache cục bộ: {}", e.getMessage());
             }
-        } catch (Exception e) {
-            log.warn("Không thể nạp file cache cục bộ: {}", e.getMessage());
         }
     }
 
